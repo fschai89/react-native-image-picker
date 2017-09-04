@@ -247,7 +247,13 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
       requestCode = REQUEST_LAUNCH_IMAGE_CAPTURE;
       cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-      final File original = createNewFile(reactContext, this.options, false);
+      final File original;
+      try{
+        original = createNewFile(reactContext, this.options, false);
+      }catch(Exception ex){
+        responseHelper.invokeError(callback, "External storage is required to use camera");
+        return;
+      }
       imageConfig = imageConfig.withOriginalFile(original);
 
       cameraCaptureURI = RealPathUtil.compatUriFromFile(reactContext, imageConfig.original);
